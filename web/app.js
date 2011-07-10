@@ -64,11 +64,11 @@ net.createServer(function(socket) {
 
   socket.on('data', function(data) {
     var msg = (buff + data.toString()).split('!');
-    var len = msg.length;
-    buff = msg[len - 1];
-    for (var i = 0; i < len - 1; i++) {
-      console.log(msg[i]);
-      //socket.broadcast(msg[i]);
+    var len = msg.length - 1;
+    buff = msg[len];
+    for (var i = 0; i < len; i++) {
+      //console.log(msg[i]);
+      io.sockets.emit('message', msg[i]);
     }
 
     console.log(msg);

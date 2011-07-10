@@ -1,21 +1,3 @@
-if ( !window.requestAnimationFrame ) {
-
-	window.requestAnimationFrame = ( function() {
-
-		return window.webkitRequestAnimationFrame ||
-		window.mozRequestAnimationFrame ||
-		window.oRequestAnimationFrame ||
-		window.msRequestAnimationFrame ||
-		function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
-
-			window.setTimeout( callback, 1000 / 60 );
-
-		};
-
-	} )();
-
-}
-
 (function(){
   var proxy;
   var player;
@@ -33,6 +15,7 @@ if ( !window.requestAnimationFrame ) {
     this.socket.on('connect', function() {
       debug('socket open.');
       self.socket.on('message', function(data) {
+        //console.log(data);
         self.handleMessage(data);
       });
     });
@@ -84,18 +67,14 @@ if ( !window.requestAnimationFrame ) {
     this.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 0, 0 ) ) );
     this.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 0, 0 ) ) );
 
-    var material = new THREE.LineBasicMaterial( { color: 0xffff00, opacity: 1.0 } );
+    var material = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 1.0 } );
     this.line = new THREE.Line( this.geometry, material );
     scene.addObject( this.line );
 
-    var materials = [];
-    for ( var i = 0; i < 6; i ++ ) {
-      materials.push([new THREE.MeshBasicMaterial({ color: 0xff0000 })]);
-    }
-    this.edge1 = new THREE.Mesh(new Cube(20, 20, 20, 1, 1, materials), new THREE.MeshFaceMaterial());
+    this.edge1 = new THREE.Mesh(new THREE.CubeGeometry(20, 20, 20), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
     this.edge1.overdraw = true;
     scene.addObject(this.edge1);
-    this.edge2 = new THREE.Mesh(new Cube(20, 20, 20, 1, 1, materials), new THREE.MeshFaceMaterial());
+    this.edge2 = new THREE.Mesh(new THREE.CubeGeometry(20, 20, 20), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
     this.edge2.overdraw = true;
     scene.addObject(this.edge2);
   }
@@ -174,7 +153,6 @@ if ( !window.requestAnimationFrame ) {
     this.camera.target.position.z = this.camera.position.z + 10;
   };
 
-  
   function initScene() {
     var container = document.getElementById('container');
     var width = window.innerWidth * 0.9 | 0;
@@ -182,7 +160,7 @@ if ( !window.requestAnimationFrame ) {
 
     camera = new THREE.Camera(70, width / height, 10, 10000);
     camera.position.y = 150;
-		camera.position.z = 500;
+		camera.position.z = 0;
 		camera.target.position.y = 150;
 
     scene = new THREE.Scene();
@@ -200,7 +178,7 @@ if ( !window.requestAnimationFrame ) {
   window.addEventListener('load', function(){
     initScene();
     proxy = new Proxy();
-    //player = new Player(0, 100, 0, camera);
+    player = new Player(0, 100, 0, camera);
     new Ground(1000);
 
     animate();
