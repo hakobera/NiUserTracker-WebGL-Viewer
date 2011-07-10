@@ -1,0 +1,12 @@
+{
+    "name": "NiWebGLUserTracker"
+  , "description": "WebGL viewer for NiUserTracker(OpenNI Sample)"
+  , "version": "0.0.1"
+  , "dependencies": {
+        "express": "2.3.11"
+      , "ejs": ">= 0.0.1"
+      , "socket.io": "0.7.6"
+      , "stylus": "0.13.3"
+      , "nib": "0.0.8"
+    }
+}

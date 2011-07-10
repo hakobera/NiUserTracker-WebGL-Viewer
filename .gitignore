@@ -1,4 +1,5 @@
 .idea/
 Release/
 Debug/
-*.o
+**/*.o
+**/node_modules
