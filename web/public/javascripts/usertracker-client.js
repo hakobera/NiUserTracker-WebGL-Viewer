@@ -67,7 +67,7 @@
     this.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 0, 0 ) ) );
     this.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 0, 0 ) ) );
 
-    var material = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 1.0 } );
+    var material = new THREE.LineBasicMaterial( { color: 0xffff00, opacity: 1.0 } );
     this.line = new THREE.Line( this.geometry, material );
     scene.addObject( this.line );
 
@@ -123,8 +123,8 @@
     this.edge2.position.z = points.to.z;
 
     this.geometry.vertices[1].position.x = points.to.x - points.from.x;
-    this.geometry.vertices[1].position.y = points.to.y - points.from.y;
-    this.geometry.vertices[1].position.z = points.to.z - points.from.z;
+
+    console.log(this.geometry.vertices[1].position.x);
   };
 
   // Player
@@ -150,7 +150,7 @@
   Player.prototype._updateCameraTarget = function(){
     this.camera.target.position.x = this.camera.position.x;
     this.camera.target.position.y = this.camera.position.y;
-    this.camera.target.position.z = this.camera.position.z + 10;
+    this.camera.target.position.z = this.camera.position.z + 100;
   };
 
   function initScene() {
@@ -159,12 +159,9 @@
     var height = window.innerHeight * 0.9 | 0;
 
     camera = new THREE.Camera(70, width / height, 10, 10000);
-    camera.position.y = 150;
-		camera.position.z = 0;
-		camera.target.position.y = 150;
 
     scene = new THREE.Scene();
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer( { clearColor: 0x000000, clearAlpha: 1, antialias: false } );
     renderer.setSize(width, height);
 
     container.appendChild(renderer.domElement);
@@ -172,13 +169,18 @@
 
   function animate() {
     requestAnimationFrame(animate);
+    render();
+  }
+
+  function render() {
+    renderer.clear();
     renderer.render(scene, camera);
   }
 
   window.addEventListener('load', function(){
     initScene();
     proxy = new Proxy();
-    player = new Player(0, 100, 0, camera);
+    player = new Player(0, 100, -100, camera);
     new Ground(1000);
 
     animate();
