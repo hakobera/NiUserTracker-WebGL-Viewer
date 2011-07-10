@@ -26,6 +26,7 @@
 #include <XnCodecIDs.h>
 #include <XnCppWrapper.h>
 #include "SceneDrawer.h"
+#include "network.h"
 
 //---------------------------------------------------------------------------
 // Globals
@@ -65,6 +66,8 @@ XnBool g_bPause = false;
 XnBool g_bRecord = false;
 
 XnBool g_bQuit = false;
+
+Tunnel* g_tunnel;
 
 //---------------------------------------------------------------------------
 // Code
@@ -323,6 +326,8 @@ int main(int argc, char **argv)
 			return (nRetVal);
 		}
 	}
+
+	g_tunnel = new Tunnel();
 
 	nRetVal = g_Context.FindExistingNode(XN_NODE_TYPE_DEPTH, g_DepthGenerator);
 	CHECK_RC(nRetVal, "Find depth generator");

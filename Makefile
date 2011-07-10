@@ -6,7 +6,8 @@ INC_DIRS = ../../Include /usr/include/ni
 
 SRC_FILES = \
 	main.cpp \
-	SceneDrawer.cpp	
+	SceneDrawer.cpp	 \
+	network.cpp
 
 EXE_NAME = Sample-NiWebGLUserTracker
 

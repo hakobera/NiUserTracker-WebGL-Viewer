@@ -23,6 +23,7 @@
 // Includes
 //---------------------------------------------------------------------------
 #include "SceneDrawer.h"
+#include "network.h"
 
 #ifndef USE_GLES
 #if (XN_PLATFORM == XN_PLATFORM_MACOSX)
@@ -43,6 +44,7 @@ extern XnBool g_bDrawSkeleton;
 extern XnBool g_bPrintID;
 extern XnBool g_bPrintState;
 
+extern Tunnel* g_tunnel;
 
 #define MAX_DEPTH 10000
 float g_pDepthHist[MAX_DEPTH];
@@ -119,6 +121,40 @@ void glPrintString(void *font, char *str)
 	}
 }
 #endif
+
+const char *jointToS(XnSkeletonJoint eJoint)
+{
+	// fool. but can't get the number of XnSkeletonJoint.
+	switch (eJoint) {
+		case XN_SKEL_HEAD: return "HEAD";
+		case XN_SKEL_NECK: return "NECK";
+		case XN_SKEL_TORSO: return "TORSO";
+		case XN_SKEL_WAIST: return "WAIST";
+		case XN_SKEL_LEFT_COLLAR: return "LEFT_COLLAR";
+		case XN_SKEL_LEFT_SHOULDER: return "LEFT_SHOULDER";
+		case XN_SKEL_LEFT_ELBOW: return "LEFT_ELBOW";
+		case XN_SKEL_LEFT_WRIST: return "LEFT_WRIST";
+		case XN_SKEL_LEFT_HAND: return "LEFT_HAND";
+		case XN_SKEL_LEFT_FINGERTIP: return "LEFT_FINGERTIP";
+		case XN_SKEL_RIGHT_COLLAR: return "RIGHT_COLLAR";
+		case XN_SKEL_RIGHT_SHOULDER: return "RIGHT_SHOULDER";
+		case XN_SKEL_RIGHT_ELBOW: return "RIGHT_ELBOW";
+		case XN_SKEL_RIGHT_WRIST: return "RIGHT_WRIST";
+		case XN_SKEL_RIGHT_HAND: return "RIGHT_HAND";
+		case XN_SKEL_RIGHT_FINGERTIP: return "RIGHT_FINGERTIP";
+		case XN_SKEL_LEFT_HIP: return "LEFT_HIP";
+		case XN_SKEL_LEFT_KNEE: return "LEFT_KNEE";
+		case XN_SKEL_LEFT_ANKLE: return "LEFT_ANKLE";
+		case XN_SKEL_LEFT_FOOT: return "LEFT_FOOT";
+		case XN_SKEL_RIGHT_HIP: return "RIGHT_HIP";
+		case XN_SKEL_RIGHT_KNEE: return "RIGHT_KNEE";
+		case XN_SKEL_RIGHT_ANKLE: return "RIGHT_ANKLE";
+		case XN_SKEL_RIGHT_FOOT: return "RIGHT_FOOT";
+	}
+
+	return "";
+}
+
 void DrawLimb(XnUserID player, XnSkeletonJoint eJoint1, XnSkeletonJoint eJoint2)
 {
 	if (!g_UserGenerator.GetSkeletonCap().IsTracking(player))
@@ -139,6 +175,15 @@ void DrawLimb(XnUserID player, XnSkeletonJoint eJoint1, XnSkeletonJoint eJoint2)
 	XnPoint3D pt[2];
 	pt[0] = joint1.position;
 	pt[1] = joint2.position;
+
+	{
+		char buff[1024];
+		jointToS(eJoint1);
+		sprintf(buff, "{\"from\":{\"name\":\"%s\", \"x\":%d, \"y\":%d, \"z\":%d}, \"to\":{\"name\":\"%s\", \"x\":%d, \"y\":%d, \"z\":%d}}!",
+			jointToS(eJoint1), (int)pt[0].X, (int)pt[0].Y, (int)pt[0].Z,
+			jointToS(eJoint2), (int)pt[1].X, (int)pt[1].Y, (int)pt[1].Z);
+		g_tunnel->send(buff);
+	}
 
 	g_DepthGenerator.ConvertRealWorldToProjective(2, pt, pt);
 #ifndef USE_GLES
